@@ -1,88 +1,85 @@
-import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
-import CustomTable from './CustomTable';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import CustomTable from "./CustomTable";
+import axios from "axios";
 // import { ReactComponent as MarketCapIcon } from './assets/market_cap_icon.svg';
 // import { ReactComponent as ClosePriceIcon } from './assets/close_price_icon.svg';
 
 const HomePage = () => {
   const [companies, setCompanies] = useState([]);
-  const [minValue, setMinValue] = useState('');
+  const [minValue, setMinValue] = useState("");
   const [loading, setLoading] = useState(true);
 
   const headers = [
-    { 
-      key: 'companyName', 
-      displayText: (
-        <div className="flex items-center">
-          Company Name
-        </div>
-      ),
+    {
+      key: "companyName",
+      displayText: <div className="flex items-center">Company Name</div>,
       renderer: (rowData) => (
         <div className="px-2 my-2">
           <Link href={`/${rowData.companyName}`} target="_blank">
-            <span className="text-blue-500 hover:text-blue-700">{rowData.companyName}</span>
+            <span className="text-blue-500 hover:text-blue-700">
+              {rowData.companyName}
+            </span>
           </Link>
         </div>
       ),
     },
-    { 
-      key: 'marketCap', 
-      displayText: (
-        <div className="flex items-center">
-          Market Cap
-        </div>
-      ),
+    {
+      key: "marketCap",
+      displayText: <div className="flex items-center">Market Cap</div>,
     },
-    { 
-      key: 'closePrice', 
-      displayText: 'Close Price' 
+    {
+      key: "closePrice",
+      displayText: "Close Price",
     },
-    { 
-      key: 'yearlyHighPrice', 
-      displayText: 'Yearly High Price' 
+    {
+      key: "yearlyHighPrice",
+      displayText: "Yearly High Price",
     },
-    { 
-      key: 'yearlyLowPrice', 
-      displayText: 'Yearly Low Price' 
+    {
+      key: "yearlyLowPrice",
+      displayText: "Yearly Low Price",
     },
   ];
 
   useEffect(() => {
     fetchData();
-  }, []); 
+  }, []);
 
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://localhost:3000/api/listCompanies');
+      const response = await axios.get(
+        "http://localhost:3000/api/listCompanies"
+      );
       setCompanies(response.data.companies);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     } finally {
       setLoading(false);
     }
   };
 
   const handleFilterChange = () => {
-    axios.post('http://localhost:3000/api/filterClosePrice', minValue,)
-    .then(response =>{
-      setCompanies(response.data.companies);
-    })
-    .catch(error => {
-      console.error('Error fetching data:', error);
-    });
+    axios
+      .post("http://localhost:3000/api/filterClosePrice", minValue)
+      .then((response) => {
+        setCompanies(response.data.companies);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
   };
 
   const handleCapChange = (data) => {
-    console.log('ttttt',data);
-    axios.post('http://localhost:3000/api/filterMarketCap',data)
-    .then(response =>{
-      setCompanies(response.data.companies);
-    })
-    .catch(error => {
-      console.error('Error fetching data:', error);
-    });
+    axios
+      .post("http://localhost:3000/api/filterMarketCap", { data })
+      .then((response) => {
+        setCompanies(response.data.companies);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
   };
 
   return (
@@ -93,18 +90,23 @@ const HomePage = () => {
         </div>
       ) : (
         <div className="flex border border-gray-300">
-          <div className="px-2 mt-4 w-1/4">   
+          <div className="px-2 mt-4 w-1/4">
             <div className="mt-4">
-              <label htmlFor="priceRange" className="px-2 block text-sm font-bold text-gray-700">Close Price</label>
+              <label
+                htmlFor="priceRange"
+                className="px-2 block text-sm font-bold text-gray-700"
+              >
+                Close Price
+              </label>
               <div className="flex justify-between mt-2 mx-1">
-                <input 
-                  type="number" 
-                  name="minPrice" 
-                  placeholder="Min Price" 
-                  onChange={(e) => setMinValue(parseFloat(e.target.value))} 
-                  className="block w-1/2 py-2 px-3 border border-blue-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" 
+                <input
+                  type="number"
+                  name="minPrice"
+                  placeholder="Min Price"
+                  onChange={(e) => setMinValue(parseFloat(e.target.value))}
+                  className="block w-1/2 py-2 px-3 border border-blue-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                 />
-                <button 
+                <button
                   className="text-white bg-blue-500 px-4 py-2 rounded-md shadow-sm hover:bg-blue-600 transition-colors"
                   onClick={handleFilterChange}
                 >
@@ -112,16 +114,21 @@ const HomePage = () => {
                 </button>
               </div>
               <div className="my-2">
-              <label htmlFor="priceRange" className="px-2 block text-sm font-bold text-gray-700 my-3">Market Capitalization</label>
-                <button 
+                <label
+                  htmlFor="priceRange"
+                  className="px-2 block text-sm font-bold text-gray-700 my-3"
+                >
+                  Market Capitalization
+                </label>
+                <button
                   className="mx-1 text-white bg-green-500 w-1/2 px-4 py-2 rounded-md shadow-sm hover:bg-blue-600 transition-colors mb-2"
                   onClick={() => {
-                    handleCapChange('largeCap');
+                    handleCapChange("largeCap");
                   }}
                 >
                   Large Cap
                 </button>
-                <button 
+                <button
                   className="mx-1 text-white bg-green-400 w-1/2 px-4 py-2 rounded-md shadow-sm hover:bg-blue-500 transition-colors mb-2"
                   onClick={() => {
                     handleCapChange("midCap");
@@ -129,7 +136,7 @@ const HomePage = () => {
                 >
                   Mid Cap
                 </button>
-                <button 
+                <button
                   className="mx-1 text-white bg-green-300 w-1/2  px-4 py-2 rounded-md shadow-sm hover:bg-blue-400 transition-colors"
                   onClick={() => {
                     handleCapChange("smallCap");
@@ -144,16 +151,15 @@ const HomePage = () => {
             <CustomTable
               headers={headers}
               content={companies}
-              keyField="companyId" 
+              keyField="companyId"
               totalItems={companies}
-              isPaginated={false} 
+              isPaginated={false}
             />
           </div>
         </div>
       )}
     </div>
   );
-  
 };
 
 export default HomePage;

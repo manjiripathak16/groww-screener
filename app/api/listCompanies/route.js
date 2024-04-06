@@ -11,6 +11,8 @@ export async function GET() {
         marketCap: true,
         companyName: true,
         closePrice: true,
+        yearlyHighPrice: true,
+        yearlyLowPrice: true,
       },
     });
   } catch (error) {
