@@ -14,7 +14,7 @@ function getCellData(header, row, index) {
   return (
     <div className="bg-white shadow-lg rounded-lg overflow-hidden m-4">
       <table className="w-full">
-        <thead className="bg-gray-200">
+        <thead className="bg-green-100">
           <tr>
             {headers.map(header => (
               <th key={header.key} className="px-2 py-2 text-left w-100 text-sm font-bold">

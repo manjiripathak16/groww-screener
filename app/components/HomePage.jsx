@@ -8,7 +8,7 @@ import axios from 'axios';
 const HomePage = () => {
   const [companies, setCompanies] = useState([]);
   const [minValue, setMinValue] = useState('');
-  const [capValue, setCapValue] = useState('');
+  // const [capValue, setCapValue] = useState('');
 
   const headers = [
     { 
@@ -64,8 +64,8 @@ const HomePage = () => {
   };
 
   const handleCapChange = (data) => {
-    setCapValue(data);
-    axios.post('http://localhost:3000/api/filterMarketCap',capValue)
+    console.log('ttttt',data);
+    axios.post('http://localhost:3000/api/filterMarketCap',data)
     .then(response =>{
       setCompanies(response.data.companies);
     })
@@ -94,22 +94,30 @@ const HomePage = () => {
               Apply Filter
             </button>
           </div>
-          <div className="px-2 mx-2 my-2 text-center d-flex flex-column">
+          <div className="my-2 text-center">
             <button 
-              className=" mx-2 text-white bg-blue-500 w-1/2 px-4 py-2 rounded-md shadow-sm hover:bg-blue-600 transition-colors mb-2"
-              onClick={()=>handleCapChange(largeCap)}
+              className="mx-1 text-white bg-green-500 w-1/2 px-4 py-2 rounded-md shadow-sm hover:bg-blue-600 transition-colors mb-2"
+              onClick={()=>
+                {
+                handleCapChange('largeCap');
+              }}
             >
               Large Cap
             </button>
             <button 
-              className="mx-2 text-white bg-blue-400 w-1/2 px-4 py-2 rounded-md shadow-sm hover:bg-blue-500 transition-colors mb-2"
-              onClick={()=>handleCapChange(midCap)}
+              className="mx-1 text-white bg-green-400 w-1/2 px-4 py-2 rounded-md shadow-sm hover:bg-blue-500 transition-colors mb-2"
+              onClick={()=>
+                {
+                handleCapChange("midCap");
+              }}
             >
               Mid Cap
             </button>
             <button 
-              className="mx-2 text-white bg-blue-300 w-1/2  px-4 py-2 rounded-md shadow-sm hover:bg-blue-400 transition-colors"
-              onClick={()=>handleCapChange(smallCap)}
+              className="mx-1 text-white bg-green-300 w-1/2  px-4 py-2 rounded-md shadow-sm hover:bg-blue-400 transition-colors"
+              onClick={()=>{
+                handleCapChange("smallCap");
+              }}
             >
               Small Cap
             </button>
