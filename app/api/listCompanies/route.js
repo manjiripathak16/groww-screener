@@ -1,11 +1,21 @@
 import axios from "axios";
 import { NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 export async function GET() {
-  let data = {
-    companyName: "HDFC",
-    marketCap: "1000000",
-    closePrice: "500",
-  };
-  return NextResponse.json({ data });
+  try {
+    const companies = await prisma.company.findMany({
+      select: {
+        marketCap: true,
+        companyName: true,
+        closePrice: true,
+      },
+    });
+    console.log(companies);
+  } catch (error) {
+    console.error("Error fetching companies:", error);
+  }
+  return NextResponse.json({ companies });
 }
