@@ -8,7 +8,7 @@ import axios from 'axios';
 const HomePage = () => {
   const [companies, setCompanies] = useState([]);
   const [minValue, setMinValue] = useState('');
-  // const [capValue, setCapValue] = useState('');
+  const [loading, setLoading] = useState(true);
 
   const headers = [
     { 
@@ -38,6 +38,14 @@ const HomePage = () => {
       key: 'closePrice', 
       displayText: 'Close Price' 
     },
+    { 
+      key: 'yearlyHighPrice', 
+      displayText: 'Yearly High Price' 
+    },
+    { 
+      key: 'yearlyLowPrice', 
+      displayText: 'Yearly Low Price' 
+    },
   ];
 
   useEffect(() => {
@@ -45,11 +53,14 @@ const HomePage = () => {
   }, []); 
 
   const fetchData = async () => {
+    setLoading(true);
     try {
       const response = await axios.get('http://localhost:3000/api/listCompanies');
       setCompanies(response.data.companies);
     } catch (error) {
       console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -75,66 +86,74 @@ const HomePage = () => {
   };
 
   return (
-    <div className="flex px-2 border border-gray-300">
-      <div className="px-2 mx-2 mt-4 w-1/4">   
-        <div className="mt-4">
-          <label htmlFor="priceRange" className="block text-sm font-medium text-gray-700">Close Price</label>
-          <div className="flex justify-between mt-2">
-            <input 
-              type="number" 
-              name="minPrice" 
-              placeholder="Min Price" 
-              onChange={(e) => setMinValue(parseFloat(e.target.value))} 
-              className="block w-1/2 py-2 px-3 border border-blue-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" 
-            />
-            <button 
-              className="text-white bg-blue-500 px-4 py-2 rounded-md shadow-sm hover:bg-blue-600 transition-colors"
-              onClick={handleFilterChange}
-            >
-              Apply Filter
-            </button>
+    <div>
+      {loading ? (
+        <div className="d-flex justify center items-center ">
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></div>
+        </div>
+      ) : (
+        <div className="flex border border-gray-300">
+          <div className="px-2 mt-4 w-1/4">   
+            <div className="mt-4">
+              <label htmlFor="priceRange" className="px-2 block text-sm font-bold text-gray-700">Close Price</label>
+              <div className="flex justify-between mt-2 mx-1">
+                <input 
+                  type="number" 
+                  name="minPrice" 
+                  placeholder="Min Price" 
+                  onChange={(e) => setMinValue(parseFloat(e.target.value))} 
+                  className="block w-1/2 py-2 px-3 border border-blue-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" 
+                />
+                <button 
+                  className="text-white bg-blue-500 px-4 py-2 rounded-md shadow-sm hover:bg-blue-600 transition-colors"
+                  onClick={handleFilterChange}
+                >
+                  Apply Filter
+                </button>
+              </div>
+              <div className="my-2">
+              <label htmlFor="priceRange" className="px-2 block text-sm font-bold text-gray-700 my-3">Market Capitalization</label>
+                <button 
+                  className="mx-1 text-white bg-green-500 w-1/2 px-4 py-2 rounded-md shadow-sm hover:bg-blue-600 transition-colors mb-2"
+                  onClick={() => {
+                    handleCapChange('largeCap');
+                  }}
+                >
+                  Large Cap
+                </button>
+                <button 
+                  className="mx-1 text-white bg-green-400 w-1/2 px-4 py-2 rounded-md shadow-sm hover:bg-blue-500 transition-colors mb-2"
+                  onClick={() => {
+                    handleCapChange("midCap");
+                  }}
+                >
+                  Mid Cap
+                </button>
+                <button 
+                  className="mx-1 text-white bg-green-300 w-1/2  px-4 py-2 rounded-md shadow-sm hover:bg-blue-400 transition-colors"
+                  onClick={() => {
+                    handleCapChange("smallCap");
+                  }}
+                >
+                  Small Cap
+                </button>
+              </div>
+            </div>
           </div>
-          <div className="my-2 text-center">
-            <button 
-              className="mx-1 text-white bg-green-500 w-1/2 px-4 py-2 rounded-md shadow-sm hover:bg-blue-600 transition-colors mb-2"
-              onClick={()=>
-                {
-                handleCapChange('largeCap');
-              }}
-            >
-              Large Cap
-            </button>
-            <button 
-              className="mx-1 text-white bg-green-400 w-1/2 px-4 py-2 rounded-md shadow-sm hover:bg-blue-500 transition-colors mb-2"
-              onClick={()=>
-                {
-                handleCapChange("midCap");
-              }}
-            >
-              Mid Cap
-            </button>
-            <button 
-              className="mx-1 text-white bg-green-300 w-1/2  px-4 py-2 rounded-md shadow-sm hover:bg-blue-400 transition-colors"
-              onClick={()=>{
-                handleCapChange("smallCap");
-              }}
-            >
-              Small Cap
-            </button>
+          <div className="flex flex-column w-3/4 p-4">
+            <CustomTable
+              headers={headers}
+              content={companies}
+              keyField="companyId" 
+              totalItems={companies}
+              isPaginated={false} 
+            />
           </div>
         </div>
-      </div>
-      <div className="flex flex-column w-3/4 p-4">
-        <CustomTable
-          headers={headers}
-          content={companies}
-          keyField="companyId" 
-          totalItems={companies}
-          isPaginated={false} 
-        />
-      </div>
+      )}
     </div>
   );
+  
 };
 
 export default HomePage;
