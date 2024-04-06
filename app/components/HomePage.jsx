@@ -8,7 +8,7 @@ import axios from 'axios';
 const HomePage = () => {
   const [companies, setCompanies] = useState([]);
   const [minValue, setMinValue] = useState('');
-  // const [maxValue, setMaxValue] = useState('');
+  const [capValue, setCapValue] = useState('');
 
   const headers = [
     { 
@@ -30,7 +30,7 @@ const HomePage = () => {
       key: 'marketCap', 
       displayText: (
         <div className="flex items-center">
-          Market Cap 
+          Market Cap
         </div>
       ),
     },
@@ -54,9 +54,18 @@ const HomePage = () => {
   };
 
   const handleFilterChange = () => {
-    axios.post('http://localhost:3000/api/filterClosePrice', {
-      closePriceValue: minValue,
+    axios.post('http://localhost:3000/api/filterClosePrice', minValue,)
+    .then(response =>{
+      setCompanies(response.data.companies);
     })
+    .catch(error => {
+      console.error('Error fetching data:', error);
+    });
+  };
+
+  const handleCapChange = (data) => {
+    setCapValue(data);
+    axios.post('http://localhost:3000/api/filterMarketCap',capValue)
     .then(response =>{
       setCompanies(response.data.companies);
     })
@@ -78,15 +87,6 @@ const HomePage = () => {
               onChange={(e) => setMinValue(parseFloat(e.target.value))} 
               className="block w-1/2 py-2 px-3 border border-blue-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" 
             />
-            <input 
-              type="number" 
-              name="maxPrice" 
-              placeholder="Max Price" 
-              onChange={(e) => setMaxValue(parseFloat(e.target.value))} 
-              className="block w-1/2 ml-2 py-2 px-3 border border-blue-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" 
-            />
-          </div>
-          <div className="px-2 mx-2 my-2 text-center">
             <button 
               className="text-white bg-blue-500 px-4 py-2 rounded-md shadow-sm hover:bg-blue-600 transition-colors"
               onClick={handleFilterChange}
@@ -94,15 +94,26 @@ const HomePage = () => {
               Apply Filter
             </button>
           </div>
-        </div>
-        <div className="mt-4 bg-gray-100 p-4">
-          <input 
-            type="text" 
-            name="search" 
-            placeholder="Search" 
-            onChange={handleFilterChange} 
-            className="block py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" 
-          />
+          <div className="px-2 mx-2 my-2 text-center d-flex flex-column">
+            <button 
+              className=" mx-2 text-white bg-blue-500 w-1/2 px-4 py-2 rounded-md shadow-sm hover:bg-blue-600 transition-colors mb-2"
+              onClick={()=>handleCapChange(largeCap)}
+            >
+              Large Cap
+            </button>
+            <button 
+              className="mx-2 text-white bg-blue-400 w-1/2 px-4 py-2 rounded-md shadow-sm hover:bg-blue-500 transition-colors mb-2"
+              onClick={()=>handleCapChange(midCap)}
+            >
+              Mid Cap
+            </button>
+            <button 
+              className="mx-2 text-white bg-blue-300 w-1/2  px-4 py-2 rounded-md shadow-sm hover:bg-blue-400 transition-colors"
+              onClick={()=>handleCapChange(smallCap)}
+            >
+              Small Cap
+            </button>
+          </div>
         </div>
       </div>
       <div className="flex flex-column w-3/4 p-4">
@@ -110,7 +121,7 @@ const HomePage = () => {
           headers={headers}
           content={companies}
           keyField="companyId" 
-          totalItems={companies.length}
+          totalItems={companies}
           isPaginated={false} 
         />
       </div>

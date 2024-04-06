@@ -1,12 +1,11 @@
 import axios from "axios";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 export async function POST(req) {
-  console.log('pppttt',req)
-  const closePriceValue = req.body.closePriceValue;
-  console.log("$$$$$$$$$$$$$$$", req);
+  const reqBody = await req.json();
+  const closePriceValue = reqBody;
   let companies;
   try {
     companies = await prisma.company.findMany({
