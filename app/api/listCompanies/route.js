@@ -3,17 +3,17 @@ import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
-
+let companies;
 export async function GET() {
   try {
-    const companies = await prisma.company.findMany({
+    companies = await prisma.company.findMany({
       select: {
         marketCap: true,
         companyName: true,
         closePrice: true,
       },
     });
-    console.log(companies);
+    // console.log(companies);
   } catch (error) {
     console.error("Error fetching companies:", error);
   }
