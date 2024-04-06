@@ -13,6 +13,8 @@ export async function POST(req) {
         marketCap: true,
         companyName: true,
         closePrice: true,
+        yearlyHighPrice: true,
+        yearlyLowPrice: true,
       },
       where: {
         closePrice: { lt: closePriceValue },
