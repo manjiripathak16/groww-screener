@@ -3,14 +3,18 @@ import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
-let companies;
-export async function GET() {
+export async function POST(req) {
+  const closePriceValue = req.closePriceValue;
+  let companies;
   try {
     companies = await prisma.company.findMany({
       select: {
         marketCap: true,
         companyName: true,
         closePrice: true,
+      },
+      where: {
+        closePrice: { lt: closePriceValue },
       },
     });
     console.log(companies);
