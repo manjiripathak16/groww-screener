@@ -17,7 +17,6 @@ export async function POST(req) {
         closePrice: { lt: closePriceValue },
       },
     });
-    console.log(companies);
   } catch (error) {
     console.error("Error fetching companies:", error);
   }

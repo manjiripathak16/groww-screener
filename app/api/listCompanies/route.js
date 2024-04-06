@@ -13,7 +13,6 @@ export async function GET() {
         closePrice: true,
       },
     });
-    // console.log(companies);
   } catch (error) {
     console.error("Error fetching companies:", error);
   }

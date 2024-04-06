@@ -4,7 +4,9 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 export async function POST(req) {
-  const closePriceValue = req.closePriceValue;
+  console.log('pppttt',req)
+  const closePriceValue = req.body.closePriceValue;
+  console.log("$$$$$$$$$$$$$$$", req);
   let companies;
   try {
     companies = await prisma.company.findMany({
@@ -17,7 +19,6 @@ export async function POST(req) {
         closePrice: { lt: closePriceValue },
       },
     });
-    console.log(companies);
   } catch (error) {
     console.error("Error fetching companies:", error);
   }
