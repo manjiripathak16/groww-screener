@@ -12,3 +12,14 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model company {
+  isin            String       @id
+  companyName     String
+  industryCode    Int
+  nseScriptCode   String?
+  yearlyHighPrice Decimal 
+  yearlyLowPrice  Decimal 
+  closePrice      Decimal
+  marketCap       String
+}
